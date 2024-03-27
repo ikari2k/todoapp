@@ -1,0 +1,5 @@
+.idea/*
+.todosenv/*
+.env
+routers/__pycache__/*
+__pycache__/*
