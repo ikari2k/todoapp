@@ -4,3 +4,4 @@
 routers/__pycache__/*
 __pycache__/*
 todos_app.db
+/poetry.lock

@@ -16,6 +16,7 @@ bcrypt = "^4.1.2"
 psycopg2-binary = "^2.9.9"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
 python-multipart = "^0.0.9"
+alembic = "^1.13.1"
 
 
 [build-system]
