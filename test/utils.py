@@ -8,7 +8,8 @@ from database import Base
 import pytest
 
 from main import app
-from models import Todos
+from models import Todos, Users
+from routers.auth import bcrypt_context
 
 SQLALCHEMY_DB_URL = "sqlite:///./testdb.db"
 
@@ -53,4 +54,24 @@ def test_todo():
     yield todo
     with engine.connect() as conn:
         conn.execute(text("DELETE FROM todos;"))
+        conn.commit()
+
+
+@pytest.fixture
+def test_user():
+    user = Users(
+        username="admin",
+        email="admin@email.com",
+        first_name="admin",
+        last_name="admin",
+        hashed_password=bcrypt_context.hash("test1234!"),
+        role="admin",
+        phone_number="(111)-111-1111",
+    )
+    db = TestingSessionLocal()
+    db.add(user)
+    db.commit()
+    yield user
+    with engine.connect() as conn:
+        conn.execute(text("DELETE FROM users;"))
         conn.commit()
