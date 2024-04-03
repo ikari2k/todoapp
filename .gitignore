@@ -6,3 +6,4 @@ poetry.lock
 testdb.db
 *__pycache__*
 
+.vscode/settings.json
