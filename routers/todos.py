@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, HTTPException, Path, APIRouter, Request
 from fastapi.responses import HTMLResponse
@@ -22,6 +22,17 @@ def get_db():
         db.close()
 
 
+"""
+db_dependency variable is used to define a dependency on a database session, 
+which can be injected into other functions or components in the application.
+It uses the `Annotated` function from the typing module to provide additional 
+metadata about the dependency.
+The dependency itself is declared as Depends(get_db), which means that 
+whenever this dependency is required, it will call the `get_db()` function 
+to provide the necessary database session.
+The type hint `Session` indicates that the dependency is expected to be 
+of type `Session`.
+"""
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
@@ -30,8 +41,8 @@ templates = Jinja2Templates(directory="templates")
 
 class TodoRequest(BaseModel):
     title: str = Field(min_length=3)
-    description: str = Field(min_length=3, max_length=100)
-    priority: int = Field(gt=0, lt=6)
+    description: Optional[str] = Field(min_length=3, max_length=100)
+    priority: int = Field(gt=0, lt=6, description="Priority should be between 1 and 5")
     complete: bool
 
 
