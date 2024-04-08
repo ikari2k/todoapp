@@ -7,3 +7,4 @@ testdb.db
 *__pycache__*
 
 .vscode/settings.json
+.DS_Store

@@ -48,7 +48,7 @@ class TodoRequest(BaseModel):
 
 @router.get("/todo/test")
 async def test(request: Request):
-    return templates.TemplateResponse("edit-todo.html", {"request": request})
+    return templates.TemplateResponse("register.html", {"request": request})
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
