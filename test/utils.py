@@ -9,7 +9,7 @@ import pytest
 
 from main import app
 from models import Todos, Users
-from routers.auth import bcrypt_context
+from api.auth import bcrypt_context
 
 SQLALCHEMY_DB_URL = "sqlite:///./testdb.db"
 

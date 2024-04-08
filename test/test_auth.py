@@ -1,5 +1,5 @@
 from .utils import *
-from routers.auth import (
+from api.auth import (
     get_db,
     authenticate_user,
     create_access_token,

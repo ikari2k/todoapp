@@ -14,13 +14,13 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 from dotenv import load_dotenv
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 load_dotenv()
-secret_key = os.getenv("SECRET_KEY")
-alg = os.getenv("ALGORITHM")
+secret_key: str = os.getenv("SECRET_KEY")
+alg: str = os.getenv("ALGORITHM")
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
 
 class CreateUserRequest(BaseModel):
