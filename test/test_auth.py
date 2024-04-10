@@ -25,14 +25,14 @@ def test_authenticate_user(test_user):
 
 def test_authenticate_user_non_existent(test_user):
     db = TestingSessionLocal()
-    non_existent_user = authenticate_user("WrongUserNAme", "password", db)
-    assert non_existent_user is False
+    with pytest.raises(ValueError):
+        authenticate_user("WrongUserNAme", "password", db)
 
 
 def test_authenticate_user_wrong_password(test_user):
     db = TestingSessionLocal()
-    non_existent_user = authenticate_user(test_user.username, "wrong_pass", db)
-    assert non_existent_user is False
+    with pytest.raises(ValueError):
+        authenticate_user(test_user.username, "wrong_pass", db)
 
 
 def test_create_access_token():
