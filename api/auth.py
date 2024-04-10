@@ -1,6 +1,6 @@
 import os
 from datetime import timedelta, datetime
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -49,12 +49,12 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-def authenticate_user(username: str, password: str, db):
+def authenticate_user(username: str, password: str, db) -> Optional[CreateUserRequest]:
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
-        return False
+        raise ValueError("User not found")
     if not bcrypt_context.verify(password, user.hashed_password):
-        return False
+        raise ValueError("Incorrect password")
     return user
 
 

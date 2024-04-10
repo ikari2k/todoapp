@@ -1,7 +1,6 @@
 from typing import Annotated, Optional
 
-from fastapi import Depends, HTTPException, Path, APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi import Depends, HTTPException, Path, APIRouter
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -51,6 +50,12 @@ async def read_all(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
     return db.query(Todos).filter(Todos.owner_id == user.get("id")).all()
+
+
+# TODO: remove in the future, for testing only
+@router.get("/api/read_by_user", status_code=status.HTTP_200_OK)
+async def read_by_user(db: db_dependency):
+    return db.query(Todos).filter(Todos.owner_id == 1).all()
 
 
 @router.get("/api/todo/{todo_id}", status_code=status.HTTP_200_OK)
