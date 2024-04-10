@@ -87,6 +87,14 @@ async def create_todo(
     db.commit()
 
 
+# TODO
+@router.post("/api/todo_as_admin", status_code=status.HTTP_201_CREATED)
+async def create_todo_as_admin(db: db_dependency, todo_request: TodoRequest):
+    todo_model = Todos(**todo_request.model_dump(), owner_id=1)
+    db.add(todo_model)
+    db.commit()
+
+
 @router.put("/api/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_todo(
     user: user_dependency,
