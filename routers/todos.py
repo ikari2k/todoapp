@@ -9,6 +9,7 @@ from api.todos import (
     create_todo_as_admin,
     TodoRequest,
     read_todo_as_admin,
+    update_todo_as_admin,
 )
 from sqlalchemy.orm import Session
 
@@ -68,3 +69,18 @@ async def edit_todo(request: Request, todo_id: int, db: db_dependency):
     return templates.TemplateResponse(
         "edit-todo.html", {"request": request, "todo": todo_model}
     )
+
+
+@router.post("/todos/edit-todo/{todo_id}", response_class=HTMLResponse)
+async def edit_todo_commit(
+    db: db_dependency,
+    todo_id: int,
+    title: str = Form(...),
+    description: str = Form(...),
+    priority: int = Form(...),
+):
+    todo_request = TodoRequest(
+        title=title, description=description, priority=priority, complete=False
+    )
+    await update_todo_as_admin(db, todo_request, todo_id)
+    return RedirectResponse(url="/todos", status_code=status.HTTP_302_FOUND)
