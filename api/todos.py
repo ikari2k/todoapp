@@ -174,3 +174,15 @@ async def delete_todo(
         Todos.owner_id == user.get("id")
     ).delete()
     db.commit()
+
+
+# TODO: delete after implementing authentication
+@router.delete("/api/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_todo_as_admin(db: db_dependency, todo_id: int = Path(gt=0)):
+    todo_model = (
+        db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == 1).first()
+    )
+    if todo_model is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == 1).delete()
+    db.commit()

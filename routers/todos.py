@@ -10,6 +10,7 @@ from api.todos import (
     TodoRequest,
     read_todo_as_admin,
     update_todo_as_admin,
+    delete_todo_as_admin,
 )
 from sqlalchemy.orm import Session
 
@@ -83,4 +84,16 @@ async def edit_todo_commit(
         title=title, description=description, priority=priority, complete=False
     )
     await update_todo_as_admin(db, todo_request, todo_id)
+    return RedirectResponse(url="/todos", status_code=status.HTTP_302_FOUND)
+
+
+@router.get("/todos/delete/{todo_id}")
+async def delete_todo(request: Request, todo_id: int, db: db_dependency):
+    todo_model = await read_todo_as_admin(db, todo_id)
+
+    if todo_model is None:
+        return RedirectResponse(url="/todos", status_code=status.HTTP_302_FOUND)
+
+    await delete_todo_as_admin(db, todo_id)
+
     return RedirectResponse(url="/todos", status_code=status.HTTP_302_FOUND)
