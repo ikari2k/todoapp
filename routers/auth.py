@@ -1,13 +1,13 @@
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import RedirectResponse
 
-from api.auth import login_for_access_token
+from api.auth import login_for_access_token, create_user, CreateUserRequest
 from database import SessionLocal
 
 router = APIRouter()
@@ -80,6 +80,45 @@ async def logout(request: Request):
 @router.get("/auth/register/", response_class=HTMLResponse)
 async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
+
+
+@router.post("/auth/register/", response_class=HTMLResponse)
+async def register_user(
+    request: Request,
+    db: db_dependency,
+    email: str = Form(...),
+    username: str = Form(...),
+    firstname: str = Form(...),
+    lastname: str = Form(...),
+    password: str = Form(...),
+    password2: str = Form(...),
+    phone: str = Form(...),
+):
+    if password != password2:
+        return templates.TemplateResponse(
+            "register.html", {"request": request, "msg": "Passwords do not match"}
+        )
+    user_request = CreateUserRequest(
+        email=email,
+        username=username,
+        first_name=firstname,
+        last_name=lastname,
+        password=password,
+        role="standard",
+        phone_number=phone,
+    )
+
+    try:
+        await create_user(db=db, create_user_request=user_request)
+    except HTTPException:
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "msg": "Username/email already exists"},
+        )
+
+    return templates.TemplateResponse(
+        "login.html", {"request": request, "msg": "User successfully created"}
+    )
 
 
 async def set_cookie(response: Response, token: str):

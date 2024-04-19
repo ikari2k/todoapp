@@ -54,6 +54,9 @@ async def add_new_todo(request: Request):
     token = request.cookies.get("access_token")
     if token is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_current_user(token)
+
     return templates.TemplateResponse(
         "add-todo.html", {"request": request, "user": user}
     )
