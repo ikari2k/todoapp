@@ -1,13 +1,14 @@
 from typing import Annotated, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from starlette.responses import RedirectResponse
+from sqlalchemy.orm import Session
 from starlette import status
+from starlette.responses import RedirectResponse
+
 from api.auth import login_for_access_token
 from database import SessionLocal
-from sqlalchemy.orm import Session
-
 
 router = APIRouter()
 
@@ -65,6 +66,15 @@ async def login(request: Request, db: db_dependency):
         return templates.TemplateResponse(
             "login.html", {"request": request, "msg": "Incorrect Username of Password"}
         )
+
+
+@router.get("/auth/logout/")
+async def logout(request: Request):
+    response = templates.TemplateResponse(
+        "login.html", {"request": request, "msg": "Logout Successful"}
+    )
+    response.delete_cookie(key="access_token")
+    return response
 
 
 @router.get("/auth/register/", response_class=HTMLResponse)

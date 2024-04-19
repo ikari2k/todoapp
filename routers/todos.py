@@ -45,7 +45,7 @@ async def read_all_by_user(request: Request, db: db_dependency):
 
     todo_model = await read_all(user, db)
     return templates.TemplateResponse(
-        "home.html", {"request": request, "todos": todo_model}
+        "home.html", {"request": request, "todos": todo_model, "user": user}
     )
 
 
@@ -54,7 +54,9 @@ async def add_new_todo(request: Request):
     token = request.cookies.get("access_token")
     if token is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("add-todo.html", {"request": request})
+    return templates.TemplateResponse(
+        "add-todo.html", {"request": request, "user": user}
+    )
 
 
 @router.post("/todos/add-todo", response_class=HTMLResponse)
@@ -87,7 +89,7 @@ async def edit_todo_as_user(request: Request, todo_id: int, db: db_dependency):
     todo_model = await read_todo(user, db, todo_id)
 
     return templates.TemplateResponse(
-        "edit-todo.html", {"request": request, "todo": todo_model}
+        "edit-todo.html", {"request": request, "todo": todo_model, "user": user}
     )
 
 
