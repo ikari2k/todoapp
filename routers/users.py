@@ -49,9 +49,9 @@ async def edit_user_view(request: Request):
 @router.post("/change-password", response_class=HTMLResponse)
 async def user_password_change(
     request: Request,
+    db: db_dependency,
     password: str = Form(...),
     password2: str = Form(...),
-    db=db_dependency,
 ):
     token = request.cookies.get("access_token")
     if token is None:
