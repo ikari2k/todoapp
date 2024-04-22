@@ -1,14 +1,14 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Path, APIRouter
+from fastapi import Depends, HTTPException, APIRouter
+from passlib.context import CryptContext
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from starlette import status
 
+import models
 from database import SessionLocal
-from models import Users
 from .auth import get_current_user
-from passlib.context import CryptContext
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
@@ -35,7 +35,7 @@ class UserVerification(BaseModel):
 async def get_user(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
-    return db.query(Users).filter(Users.id == user.get("id")).first()
+    return db.query(models.Users).filter(models.Users.id == user.get("id")).first()
 
 
 @router.put("/password", status_code=status.HTTP_204_NO_CONTENT)
@@ -44,7 +44,9 @@ async def change_password(
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
-    user_model = db.query(Users).filter(Users.id == user.get("id")).first()
+    user_model = (
+        db.query(models.Users).filter(models.Users.id == user.get("id")).first()
+    )
 
     if not bcrypt_context.verify(
         user_verification.password, user_model.hashed_password
@@ -61,7 +63,9 @@ async def change_phone_number(
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
-    user_model = db.query(Users).filter(Users.id == user.get("id")).first()
+    user_model = (
+        db.query(models.Users).filter(models.Users.id == user.get("id")).first()
+    )
     user_model.phone_number = phone_number
     db.add(user_model)
     db.commit()
