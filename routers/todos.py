@@ -17,9 +17,9 @@ from api.todos import (
     complete_todo,
 )
 from database import SessionLocal
-from routers.auth_utils import get_user_model_based_on_request
+from routers.auth_utils import get_user_model_based_on_token
 
-router = APIRouter()
+router = APIRouter(tags=["todos"], responses={404: {"description": "Not Found"}})
 
 templates = Jinja2Templates(directory="templates")
 
@@ -37,7 +37,12 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.get("/todos", response_class=HTMLResponse)
 async def read_all_by_user(request: Request, db: db_dependency):
-    user = await get_user_model_based_on_request(request)
+    token = request.cookies.get("access_token")
+
+    if token is None:
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_user_model_based_on_token(token)
 
     todo_model = await read_all(user, db)
 
@@ -48,7 +53,12 @@ async def read_all_by_user(request: Request, db: db_dependency):
 
 @router.get("/todos/add-todo", response_class=HTMLResponse)
 async def add_new_todo(request: Request):
-    user = await get_user_model_based_on_request(request)
+    token = request.cookies.get("access_token")
+
+    if token is None:
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_user_model_based_on_token(token)
 
     return templates.TemplateResponse(
         "add-todo.html", {"request": request, "user": user}
@@ -63,7 +73,12 @@ async def create_todo_by_user(
     description: str = Form(...),
     priority: int = Form(...),
 ):
-    user = await get_user_model_based_on_request(request)
+    token = request.cookies.get("access_token")
+
+    if token is None:
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_user_model_based_on_token(token)
 
     todo_request = TodoRequest(
         title=title, description=description, priority=priority, complete=False
@@ -74,7 +89,12 @@ async def create_todo_by_user(
 
 @router.get("/todos/edit-todo/{todo_id}", response_class=HTMLResponse)
 async def edit_todo_as_user(request: Request, todo_id: int, db: db_dependency):
-    user = await get_user_model_based_on_request(request)
+    token = request.cookies.get("access_token")
+
+    if token is None:
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_user_model_based_on_token(token)
 
     todo_model = await read_todo(user, db, todo_id)
 
@@ -92,7 +112,12 @@ async def edit_todo_as_user_and_commit(
     description: str = Form(...),
     priority: int = Form(...),
 ):
-    user = await get_user_model_based_on_request(request)
+    token = request.cookies.get("access_token")
+
+    if token is None:
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_user_model_based_on_token(token)
 
     todo_request = TodoRequest(
         title=title, description=description, priority=priority, complete=False
@@ -117,7 +142,12 @@ async def delete_todo(request: Request, todo_id: int, db: db_dependency):
 
 @router.get("/todos/complete/{todo_id}", response_class=HTMLResponse)
 async def complete_todo_as_user(request: Request, todo_id: int, db: db_dependency):
-    user = await get_user_model_based_on_request(request)
+    token = request.cookies.get("access_token")
+
+    if token is None:
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+
+    user = await get_user_model_based_on_token(token)
 
     await complete_todo(user, db, todo_id)
 
