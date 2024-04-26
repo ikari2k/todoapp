@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from app.db.database import get_db
-from models import Users
+from app.db.models import Users
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 load_dotenv()

@@ -3,13 +3,13 @@ from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-import models
 from api import (
     auth as auth_api,
     todos as todos_api,
     admin as admin_api,
     users as users_api,
 )
+from app.db import models
 from app.db.database import engine
 from routers import todos as todos_router, auth as auth_router, users as user_router
 

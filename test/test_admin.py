@@ -1,7 +1,8 @@
-from api.admin import get_db, get_current_user
-from .utils import *
 from fastapi import status
-from models import Todos
+
+from api.admin import get_db, get_current_user
+from app.db.models import Todos
+from .utils import *
 
 app.dependency_overrides[get_db] = override_get_db
 app.dependency_overrides[get_current_user] = override_get_current_user

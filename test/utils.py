@@ -6,8 +6,8 @@ from sqlalchemy.pool import StaticPool
 
 from api.auth import bcrypt_context
 from app.db.database import Base
+from app.db.models import Todos, Users
 from main import app
-from models import Todos, Users
 
 SQLALCHEMY_DB_URL = "sqlite:///./testdb.db"
 
