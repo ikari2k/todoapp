@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette import status
 
-from database import SessionLocal
+from app.db.database import get_db
 from models import Users
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -36,14 +36,6 @@ class CreateUserRequest(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 db_dependency = Annotated[Session, Depends(get_db)]

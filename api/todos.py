@@ -6,20 +6,11 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from starlette import status
 
-from database import SessionLocal
+from app.db.database import get_db
 from models import Todos
 from .auth import get_current_user
 
 router = APIRouter(tags=["todo"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 """
 db_dependency variable is used to define a dependency on a database session, 

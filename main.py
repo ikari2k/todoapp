@@ -10,7 +10,7 @@ from api import (
     admin as admin_api,
     users as users_api,
 )
-from database import engine
+from app.db.database import engine
 from routers import todos as todos_router, auth as auth_router, users as user_router
 
 app = FastAPI()

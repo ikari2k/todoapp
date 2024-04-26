@@ -8,20 +8,11 @@ from starlette import status
 from starlette.responses import RedirectResponse
 
 from api.auth import login_for_access_token, create_user, CreateUserRequest
-from database import SessionLocal
+from app.db.database import get_db
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
