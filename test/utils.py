@@ -1,15 +1,13 @@
-from sqlalchemy.pool import StaticPool
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, text
-
-from fastapi.testclient import TestClient
-
-from database import Base
 import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
+from api.auth import bcrypt_context
+from app.db.database import Base
 from main import app
 from models import Todos, Users
-from api.auth import bcrypt_context
 
 SQLALCHEMY_DB_URL = "sqlite:///./testdb.db"
 

@@ -7,19 +7,10 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 import models
-from database import SessionLocal
+from app.db.database import get_db
 from .auth import get_current_user
 
 router = APIRouter(prefix="/api/user", tags=["user"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
